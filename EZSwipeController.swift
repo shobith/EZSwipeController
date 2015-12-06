@@ -16,6 +16,7 @@ import UIKit
     optional func disableSwipingForRightButtonAtPageIndex(index: Int) -> Bool
     optional func clickedLeftButtonFromPageIndex(index: Int)
     optional func clickedRightButtonFromPageIndex(index: Int)
+    optional func navigationBarHiddenForPageIndex(index: Int) -> Bool
 }
 
 public class EZSwipeController: UIViewController {
@@ -141,9 +142,12 @@ public class EZSwipeController: UIViewController {
         stackPageVC = [UIViewController]()
         for index in 0..<stackVC.count {
             let pageVC = UIViewController()
-            if !navigationBarShouldBeOnBottom {
+            let navbarHiddenForIndex = datasource?.navigationBarHiddenForPageIndex?(index)
+           
+            if !navigationBarShouldBeOnBottom && (navbarHiddenForIndex == nil || navbarHiddenForIndex == false) {
                 stackVC[index].view.frame.origin.y += Constants.navigationBarHeight
             }
+            
             pageVC.addChildViewController(stackVC[index])
             pageVC.view.addSubview(stackVC[index].view)
             stackVC[index].didMoveToParentViewController(pageVC)

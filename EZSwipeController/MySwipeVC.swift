@@ -18,6 +18,10 @@ class MySwipeVC: EZSwipeController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 231/255, green: 231/255, blue: 231/255, alpha: 1)
     }
+
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
 }
 
 extension MySwipeVC: EZSwipeControllerDataSource {
@@ -30,7 +34,7 @@ extension MySwipeVC: EZSwipeControllerDataSource {
         
         let blueVC = UIViewController()
         blueVC.view.backgroundColor = UIColor.blueColor()
-        let squir = UIImageView(x: 50, y: 100, imageName: "squir", scaleToWidth: 300)
+        let squir = UIImageView(x: 50, y: 100 + EZSwipeController.Constants.navigationBarHeight, imageName: "squir", scaleToWidth: 300)
         blueVC.view.addSubview(squir)
 
         let greenVC = UIViewController()
@@ -41,7 +45,20 @@ extension MySwipeVC: EZSwipeControllerDataSource {
         return [redVC, blueVC, greenVC]
     }
     
+    func navigationBarHiddenForPageIndex(index: Int) -> Bool {
+        if index == 1 {
+            return true
+        }
+        return false
+    }
+    
     func navigationBarDataForPageIndex(index: Int) -> UINavigationBar {
+        
+        let navigationBar = UINavigationBar()
+        navigationBar.barStyle = UIBarStyle.Default
+        navigationBar.barTintColor = UIColor(red: 231/255, green: 231/255, blue: 231/255, alpha: 1)
+        navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.blackColor()]
+        
         var title = ""
         if index == 0 {
             title = "Charmander"
@@ -50,15 +67,10 @@ extension MySwipeVC: EZSwipeControllerDataSource {
         } else if index == 2 {
             title = "Bulbasaur"
         }
-
-        let navigationBar = UINavigationBar()
-        navigationBar.barStyle = UIBarStyle.Default
-        navigationBar.barTintColor = UIColor(red: 231/255, green: 231/255, blue: 231/255, alpha: 1)
-        navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.blackColor()]
         
         let navigationItem = UINavigationItem(title: title)
         navigationItem.hidesBackButton = true
-        
+
         if index == 0 {
             var sImage = UIImage(named: "squir")!
             sImage = scaleTo(image: sImage, w: 22, h: 22)
@@ -80,6 +92,8 @@ extension MySwipeVC: EZSwipeControllerDataSource {
             
             navigationItem.leftBarButtonItem = leftButtonItem
             navigationItem.rightBarButtonItem = rightButtonItem
+            
+            navigationBar.hidden = true
         } else if index == 2 {
             var sImage = UIImage(named: "squir")!
             sImage = scaleTo(image: sImage, w: 22, h: 22)
@@ -89,6 +103,7 @@ extension MySwipeVC: EZSwipeControllerDataSource {
             navigationItem.leftBarButtonItem = leftButtonItem
             navigationItem.rightBarButtonItem = nil
         }
+
         navigationBar.pushNavigationItem(navigationItem, animated: false)
         return navigationBar
     }
